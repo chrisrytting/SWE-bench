@@ -23,6 +23,9 @@ MAP_REPO_TO_VERSION_PATHS = {
     "scikit-learn/scikit-learn": ["sklearn/__init__.py"],
     "sphinx-doc/sphinx": ["sphinx/__init__.py"],
     "sympy/sympy": ["sympy/release.py", "sympy/__init__.py"],
+
+    # Added beyond base SWE-Bench
+    "pypa/setuptools": ["pyproject.toml"],
 }
 
 # Cosntants - Task Instance Version Regex Pattern
@@ -46,6 +49,7 @@ MAP_REPO_TO_VERSION_PATTERNS = {
         "scikit-learn/scikit-learn",
         "sphinx-doc/sphinx",
         "sympy/sympy",
+        "pypa/setuptools",
     ]
 }
 MAP_REPO_TO_VERSION_PATTERNS.update(
