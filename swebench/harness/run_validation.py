@@ -369,6 +369,7 @@ def main(
     for instance in dataset:
         instance["FAIL_TO_PASS"] = []
         instance["PASS_TO_PASS"] = []
+    
     existing_images = list_images(client)
     print(f"Running {len(dataset)} unevaluated instances...")
     if not dataset:
@@ -417,7 +418,7 @@ def main(
     ) as f_all:
         for instance in data:
             print(json.dumps(instance), file=f_all)
-            if len(instance["FAIL_TO_PASS"]) > 0:
+            if len(instance.get("FAIL_TO_PASS", [])) > 0:
                 print(json.dumps(instance), file=f)
 
 
