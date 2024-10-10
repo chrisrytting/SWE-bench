@@ -107,3 +107,12 @@ python swebench/versioning/get_versions.py \
 # Chris: this one worked with the same tweak to get_versions.py that we made for flask.
 #
 (cd swebench/versioning/extract_web && python get_versions_xarray.py)
+
+python swebench/versioning/get_versions.py \
+    --instances_path swebench/collect/Q3/setuptools-task-instances.jsonl \
+    --retrieval_method github \
+    --conda_env sweagent \
+    --path_conda /Users/vin/miniconda3/ \
+    --num_workers 1 \
+    --output_dir swebench/collect/Q3_versioned/ \
+    --testbed ./testbed
