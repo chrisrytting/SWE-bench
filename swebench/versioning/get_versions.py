@@ -17,8 +17,9 @@ logger = logging.getLogger(__name__)
 
 INSTALL_CMD = {
     "pytest-dev/pytest": "pip install -e .",
-    "matplotlib/matplotlib": "python -m pip install -e .",
+    "matplotlib/matplotlib": "python -mpip install -e .",
     "pydata/xarray": "pip install -e .",
+    "pallets/flask": "pip install -e .",
 }
 
 
@@ -85,7 +86,8 @@ def get_version(instance, is_build=False, path_repo=None):
                 path_to_version,
             )
             init_text = requests.get(url).text
-        version = _find_version_in_text(init_text, instance)
+        if init_text is not None:
+            version = _find_version_in_text(init_text, instance)
         if version is not None:
             if "." in version:
                 version = keep_major_minor(version, ".")
@@ -177,7 +179,7 @@ def get_versions_from_build(data: dict):
             continue
 
         # Look up version according to repo-specific paths
-        version = get_version(instance, is_build=True, path_repo=path_repo)
+        version = get_version(instance, is_build=True, path_repo="./")
         instance["version"] = version
         logger.info(f'For instance {instance["instance_id"]}, version is {version}')
 
@@ -231,12 +233,17 @@ def merge_results(instances_path: str, repo_prefix: str, output_dir: str = None)
 
     # Save merged results to original task instances file's path with `_versions` suffix
     old_path_file = instances_path.split("/")[-1]
-    instances_path_new = f"{old_path_file.split('.')[0]}_versions.json"
-    if output_dir is not None:
-        instances_path_new = os.path.join(output_dir, instances_path_new)
+    instances_path_new = old_path_file[:old_path_file.rfind(".")] + "_versions" + old_path_file[old_path_file.rfind("."):]
+    if output_dir is None:
+        output_dir = os.path.dirname(instances_path)
+    instances_path_new = os.path.join(output_dir, instances_path_new)
     with open(f"{instances_path_new}", "w") as f:
-        json.dump(merged, fp=f)
-    logger.info(f"Saved merged results to {instances_path_new} ({len(merged)} instances)")
+       for item in merged:
+            json.dump(item, f)
+            f.write('\n')
+    logger.info(
+        f"Saved merged results to {instances_path_new} ({len(merged)} instances)"
+    )
     return len(merged)
 
 
@@ -310,7 +317,7 @@ def main(args):
                 f"Creating clone of {data_tasks[0]['repo']} at {testbed_repo_name}"
             )
             cmd_clone = (
-                f"git clone git@github.com:swe-bench/{repo_prefix} {testbed_repo_name}"
+                f"git clone git@github.com:vinhowe/{repo_prefix} {testbed_repo_name}"
             )
             subprocess.run(cmd_clone, shell=True, check=True, stdout=subprocess.DEVNULL)
         else:
